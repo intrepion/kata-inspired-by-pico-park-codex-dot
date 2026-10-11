@@ -127,7 +127,7 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
   text-align: center;
   backdrop-filter: blur(8px);
 }
@@ -138,22 +138,28 @@ canvas {
   max-width: 530px;
 }
 .card h2 {
-  font-size: clamp(26px, 4vw, 46px);
+  font-size: clamp(26px, 2.8vw, 38px);
   letter-spacing: -1.5px;
   line-height: 1.1;
-  margin: 14px 0;
+  margin: 10px 0;
 }
 .card p {
   color: #c9ded5;
-  line-height: 1.7;
-  font-size: 14px;
+  line-height: 1.45;
+  font-size: 13px;
+  margin: 10px 0;
 }
 .actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin: 20px 0;
+  margin: 10px 0;
+}
+.card > .eyebrow {
+  font-size: 10px;
+  line-height: 1.2;
+  margin: 0;
 }
 .secondary {
   background: #ffffff12;

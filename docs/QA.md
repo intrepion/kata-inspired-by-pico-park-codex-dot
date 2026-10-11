@@ -42,3 +42,5 @@ Screenshots: [local co-op](evidence/co-op.jpg), [planter](evidence/planter.jpg),
 ## Limitations
 
 No online networking. No stacking. No physical two-person keyboard-rollover or physical mobile multitouch session. Small portrait screen makes the playfield compact; landscape recommended. Sound is synthesized feedback only; speaker output not listened to. Session server requires restart after logout/reboot and is loopback-only. Sidebar project registration is unavailable through the supported tools in this environment.
+
+Final presentation retest: desktop menus and playfield fit the current Chrome viewport. Focused Sound/Motion controls activate with Enter through their normal DOM behavior (sound on and motion reduced both visibly confirmed), then reload restores default mute/start screen. Default local co-op garden one completed with independent Sol and Luna controls. Final suite: 23/23 passing; production build and type checking pass; npm audit reports zero vulnerabilities.
