@@ -1,9 +1,11 @@
 export type Rect = { x: number; y: number; w: number; h: number };
+export type Planter = Rect & { minX: number; maxX: number };
 export type Beacon = { x: number; y: number; role: 0 | 1 };
 export type Level = {
   name: string;
   hint: string;
   platforms: Rect[];
+  planters?: Planter[];
   beacons: Beacon[];
   gates: (Rect & { links: number[] })[];
   key: { x: number; y: number };
@@ -90,24 +92,25 @@ export const levels: Level[] = [
     ],
   },
   {
-    name: "A little backtracking",
-    hint: "Luna opens the way for Sol. Bring both lights home.",
+    name: "The rolling planter",
+    hint: "Luna opens the way. Push the planter right, then hop onto it to reach Sol’s light.",
     platforms: [
       ground,
       shelf(150, 405, 120),
       shelf(315, 340, 120),
       shelf(495, 405, 120),
-      shelf(670, 340, 120),
+      shelf(700, 305, 90),
     ],
     beacons: [
       { x: 210, y: 405, role: 1 },
-      { x: 730, y: 340, role: 0 },
+      { x: 745, y: 305, role: 0 },
     ],
     gates: [
       { x: 465, y: 260, w: 18, h: 210, links: [0] },
       { x: 820, y: 260, w: 18, h: 210, links: [1] },
     ],
-    key: { x: 550, y: 381 },
+    planters: [{ x: 520, y: 371, w: 34, h: 34, minX: 495, maxX: 581 }],
+    key: { x: 690, y: 446 },
     portal,
     spawns: [
       [70, 438],

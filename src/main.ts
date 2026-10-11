@@ -1,4 +1,5 @@
 import "./style.css";
+import { render } from "./render";
 import { TickClock } from "./clock";
 import { InputBuffer } from "./input";
 import { levels } from "./levels";
@@ -8,6 +9,7 @@ root.innerHTML = `<header><div><div class="brand">Together, <span>Little Lights<
 const el = (id: string) => document.getElementById(id)!;
 const canvas = document.querySelector("canvas")!;
 const ctx = canvas.getContext("2d")!;
+let completionRewarded = false;
 let world = createWorld(0),
   playing = false,
   solo = false,
@@ -62,6 +64,7 @@ function resume() {
 }
 function load(i: number) {
   world = createWorld(i);
+  completionRewarded = false;
   active = 0;
   el("count").textContent = `Garden ${i + 1} / ${levels.length}`;
   el("name").textContent = world.level.name;
@@ -105,7 +108,7 @@ el("select").onclick = () => {
   document
     .querySelectorAll<HTMLButtonElement>("[data-level]")
     .forEach((b) => (b.onclick = () => load(Number(b.dataset.level))));
-  el("back").onclick = resume;
+  el("back").onclick = () => (world.won ? complete() : resume());
 };
 el("mute").onclick = () => {
   muted = !muted;
@@ -148,6 +151,11 @@ window.addEventListener("keydown", (e) => {
     return;
   }
   if (!playing) return;
+  if (
+    e.target instanceof HTMLElement &&
+    e.target.closest("button,input,select,textarea,a")
+  )
+    return;
   if (k === "r") {
     e.preventDefault();
     if (!e.repeat) load(world.index);
@@ -201,157 +209,23 @@ function input(which: number): Input {
   };
 }
 function complete() {
-  unlocked = Math.max(unlocked, Math.min(6, world.index + 2));
-  try {
-    localStorage.setItem(
-      "little-lights-progress",
-      JSON.stringify({ version: 1, unlocked }),
-    );
-  } catch {}
-  tone(880);
+  if (!completionRewarded) {
+    unlocked = Math.max(unlocked, Math.min(levels.length, world.index + 2));
+    try {
+      localStorage.setItem(
+        "little-lights-progress",
+        JSON.stringify({ version: 1, unlocked }),
+      );
+    } catch {}
+    tone(880);
+    completionRewarded = true;
+  }
   overlay(
-    `<p class="eyebrow">Garden ${world.index + 1} restored</p><h2>${world.index === 5 ? "Look what we grew." : "A little brighter, together."}</h2><p>${world.index === 5 ? "Every beacon is awake. Sol and Luna have brought the garden home. Thanks for sharing the journey." : "Both friends made it. Your next garden is ready."}</p><div class="actions"><button id="next">${world.index === 5 ? "Play again" : "Next garden →"}</button><button id="again" class="secondary">Replay this garden</button></div>`,
+    `<p class="eyebrow">Garden ${world.index + 1} restored</p><h2>${world.index === levels.length - 1 ? "Look what we grew." : "A little brighter, together."}</h2><p>${world.index === levels.length - 1 ? "Every beacon is awake. Sol and Luna have brought the garden home. Thanks for sharing the journey." : "Both friends made it. Your next garden is ready."}</p><div class="actions"><button id="next">${world.index === levels.length - 1 ? "Play again" : "Next garden →"}</button><button id="again" class="secondary">Replay this garden</button></div>`,
   );
-  el("next").onclick = () => load(world.index === 5 ? 0 : world.index + 1);
+  el("next").onclick = () =>
+    load(world.index === levels.length - 1 ? 0 : world.index + 1);
   el("again").onclick = () => load(world.index);
-}
-function round(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number,
-  color: string,
-) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-  ctx.fill();
-}
-function text(t: string, x: number, y: number, size: number, color: string) {
-  ctx.fillStyle = color;
-  ctx.font = `600 ${size}px system-ui`;
-  ctx.textAlign = "center";
-  ctx.fillText(t, x, y);
-}
-function draw(time: number) {
-  const t = reduced ? 0 : time / 1000;
-  const gradient = ctx.createLinearGradient(0, 0, 0, 540);
-  gradient.addColorStop(0, "#a9d5d5");
-  gradient.addColorStop(1, "#e6efc8");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 960, 540);
-  ctx.fillStyle = "#ffffff50";
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.ellipse(
-      100 + i * 210 + Math.sin(t * 0.15 + i) * 12,
-      95 + (i % 2) * 35,
-      80,
-      22,
-      0,
-      0,
-      7,
-    );
-    ctx.fill();
-  }
-  ctx.fillStyle = "#85b9aa55";
-  ctx.beginPath();
-  ctx.moveTo(0, 470);
-  for (let x = 0; x <= 960; x += 20)
-    ctx.lineTo(x, 360 + Math.sin(x * 0.009) * 45);
-  ctx.lineTo(960, 540);
-  ctx.lineTo(0, 540);
-  ctx.fill();
-  for (const p of world.level.platforms) {
-    round(p.x, p.y, p.w, p.h, 8, "#537568");
-    round(p.x, p.y, p.w, 8, 5, "#83b572");
-    for (let x = p.x + 15; x < p.x + p.w; x += 38) {
-      text("·", x, p.y + 22, 18, "#b9ce8b");
-    }
-    if (p.h < 30) {
-      ctx.strokeStyle = "#75998977";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(p.x + 12, p.y + p.h);
-      ctx.lineTo(p.x + 20, p.y + 60);
-      ctx.stroke();
-    }
-  }
-  for (let i = 0; i < world.level.beacons.length; i++) {
-    const b = world.level.beacons[i],
-      lit = world.lit[i],
-      color = b.role === 0 ? "#efb43b" : "#a487d7";
-    if (lit) {
-      ctx.fillStyle = b.role === 0 ? "#ffdc6360" : "#c2a1ff60";
-      ctx.beginPath();
-      ctx.arc(b.x, b.y - 27, 36 + Math.sin(t * 3) * 3, 0, 7);
-      ctx.fill();
-    }
-    round(b.x - 5, b.y - 25, 10, 25, 4, "#567465");
-    round(b.x - 17, b.y - 46, 34, 32, 10, lit ? color : "#eff3de");
-    text(b.role === 0 ? "☀" : "☾", b.x, b.y - 23, 22, lit ? "#fff8db" : color);
-    text(lit ? "✓" : b.role === 0 ? "E" : "↵", b.x, b.y - 55, 13, "#34554f");
-  }
-  for (const g of world.level.gates) {
-    if (g.links.every((i) => world.lit[i])) {
-      round(g.x, g.y + g.h - 6, g.w, 6, 3, "#81b7a3");
-      continue;
-    }
-    round(g.x, g.y, g.w, g.h, 6, "#436961");
-    for (let y = g.y + 12; y < g.y + g.h; y += 22)
-      text("✦", g.x + g.w / 2, y, 13, "#c7e3c1");
-  }
-  const d = world.level.portal,
-    ready = world.key && world.lit.every(Boolean);
-  round(d.x, d.y, d.w, d.h, 35, "#426f65");
-  round(d.x + 9, d.y + 9, d.w - 18, d.h - 9, 29, ready ? "#fff3b9" : "#a6c4aa");
-  text(
-    ready ? "✦" : "⌑",
-    d.x + d.w / 2,
-    d.y + 47,
-    28,
-    ready ? "#d7a546" : "#567a70",
-  );
-  text("TOGETHER", d.x + d.w / 2, d.y - 12, 10, "#42655b");
-  if (!world.key) {
-    const k = world.level.key;
-    text("⚿", k.x, k.y + Math.sin(t * 3) * 3, 34, "#b88b27");
-    text("KEY", k.x, k.y - 23, 9, "#587166");
-  }
-  world.players.forEach((p, i) => {
-    const color = i === 0 ? "#ffc454" : "#b899e7";
-    ctx.fillStyle = "#36595122";
-    ctx.beginPath();
-    ctx.ellipse(p.x + 13, p.y + 34, 18, 5, 0, 0, 7);
-    ctx.fill();
-    const bob = p.grounded && !reduced ? Math.sin(t * 5 + i) * 1.3 : 0;
-    round(p.x, p.y + bob, 26, 29, 10, color);
-    round(p.x + 3, p.y + 26, 7, 6, 3, i === 0 ? "#bd8635" : "#8067aa");
-    round(p.x + 17, p.y + 26, 7, 6, 3, i === 0 ? "#bd8635" : "#8067aa");
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(p.x + 13, p.y);
-    ctx.lineTo(p.x + 13, p.y - 6);
-    ctx.stroke();
-    text(i === 0 ? "✦" : "✧", p.x + 13, p.y - 8, 14, color);
-    ctx.fillStyle = "#374f53";
-    ctx.beginPath();
-    ctx.arc(p.x + 8 + (p.vx > 0 ? 1 : 0), p.y + 12 + bob, 2, 0, 7);
-    ctx.arc(p.x + 18 + (p.vx > 0 ? 1 : 0), p.y + 12 + bob, 2, 0, 7);
-    ctx.fill();
-    ctx.strokeStyle = "#79584f";
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(p.x + 13, p.y + 18 + bob, 3, 0, Math.PI);
-    ctx.stroke();
-    text(i === 0 ? "SOL" : "LUNA", p.x + 13, p.y - 25, 10, "#345e58");
-    if (solo && active === i) text("▼", p.x + 13, p.y - 39, 13, "#42645e");
-  });
-  const lit = world.lit.filter(Boolean).length;
-  el("status").textContent =
-    `${world.key ? "⚿ Key found" : "⚿ Find the key"}${world.lit.length ? ` · ${lit}/${world.lit.length} lights` : ""}`;
 }
 let last = 0;
 function frame(now: number) {
@@ -372,7 +246,10 @@ function frame(now: number) {
       }
     }
   }
-  draw(now);
+  render(ctx, world, { time: now, reduced, solo, active });
+  const lit = world.lit.filter(Boolean).length;
+  el("status").textContent =
+    `${world.key ? "⚿ Key found" : "⚿ Find the key"}${world.lit.length ? ` · ${lit}/${world.lit.length} lights` : ""}`;
   requestAnimationFrame(frame);
 }
 load(0);

@@ -1,4 +1,4 @@
-import { levels, type Rect, type Level } from "./levels.js";
+import { levels, type Rect, type Level, type Planter } from "./levels.js";
 export const DT = 1 / 120;
 export type Input = {
   left?: boolean;
@@ -20,6 +20,7 @@ export type World = {
   index: number;
   players: Player[];
   lit: boolean[];
+  planters: Planter[];
   key: boolean;
   won: boolean;
   ticks: number;
@@ -45,6 +46,7 @@ export function createWorld(index: number, level?: Level): World {
       lastJump: false,
       lastAct: false,
     })),
+    planters: (level.planters ?? []).map((planter) => ({ ...planter })),
     lit: level.beacons.map(() => false),
     key: false,
     won: false,
@@ -62,6 +64,7 @@ export function step(w: World, inputs: Input[]) {
   w.ticks++;
   const solids = [
     ...w.level.platforms,
+    ...w.planters,
     ...w.level.gates.filter((g) => !g.links.every((i) => w.lit[i])),
   ];
   w.players.forEach((p, id) => {
@@ -77,6 +80,21 @@ export function step(w: World, inputs: Input[]) {
       p.grounded = false;
     }
     p.x += p.vx * DT;
+    for (const planter of w.planters) {
+      if (p.vx !== 0 && overlap(p, planter)) {
+        const nextX = Math.max(
+          planter.minX,
+          Math.min(planter.maxX, planter.x + p.vx * DT),
+        );
+        const moved = { ...planter, x: nextX };
+        if (
+          !w.players.some(
+            (other, otherId) => otherId !== id && overlap(other, moved),
+          )
+        )
+          planter.x = nextX;
+      }
+    }
     for (const s of solids)
       if (overlap(p, s)) p.x = p.vx > 0 ? s.x - p.w : s.x + s.w;
     p.x = Math.max(8, Math.min(926, p.x));

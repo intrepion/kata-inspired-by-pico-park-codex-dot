@@ -82,13 +82,15 @@ for (let index = 0; index < 6; index++)
       light(w, 1);
       first(w, 0);
       jump(w, 0, 350);
-      jump(w, 0, 510);
-      move(w, 0, 585);
+      jump(w, 0, 480);
+      move(w, 0, 555);
+      jump(w, 0, 585);
       jump(w, 0, 725);
       light(w, 0);
       exit(w, 0);
       jump(w, 1, 350);
-      jump(w, 1, 510);
+      jump(w, 1, 480);
+      jump(w, 1, 585);
       exit(w, 1);
     }
     if (index === 5) {
