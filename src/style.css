@@ -310,7 +310,7 @@ footer {
 }
 @media (min-width: 651px) {
   .scene {
-    max-width: min(100%, calc((100svh - 270px) * 16 / 9));
+    max-width: min(100%, calc((100svh - 325px) * 16 / 9));
     margin-inline: auto;
   }
 }

@@ -8,9 +8,9 @@ Actual red → green slices: invalid stage loading failed on missing spawns, the
 
 ## Tests
 
-21 passing Node test-runner behavior tests at simulation/input/clock boundaries:
+23 passing Node test-runner behavior tests at simulation/input/clock boundaries:
 - All six authored campaign routes complete in legitimate solo command sequences with both friends and no falls.
-- Independent simultaneous movement, solid landing, buffered and held jump behavior.
+- Independent simultaneous movement, solid landing, buffered, coyote and held jump behavior.
 - Role-specific persistent lights and closed/open gates.
 - Shared-key retention after falling; complete fresh reset.
 - Portal requires both friends, key and all lights; simulation completion is idempotent.
@@ -33,7 +33,9 @@ Used the supported CUA browser tool and normal held keyboard chords/clicks, with
 | The rolling planter | Luna route light; Sol pushes/climbs planter; high light; Luna collects key; Garden 5 restored |
 | The garden wakes | Four role lights and shared key, Garden 6 restored / Look what we grew |
 
-Both keyboard schemes exercised in solo. Simultaneous four-key movement/jump exercised in local co-op. Pause rejects movement; replay/restart reset lights/key; completion → Gardens → Back restores completion. Reload retained unlocks (all six garden buttons enabled after campaign). Touch move/jump/swap exercised in 390×844 responsive Chrome view, with desktop viewport restored. Mobile clipping was found and fixed, then re-inspected. Headings/buttons are DOM-based with visible keyboard focus.
+Both keyboard schemes exercised in solo. Default local co-op garden one was also completed by independently controlling both friends. Simultaneous four-key movement/jump exercised in local co-op. Pause rejects movement; replay/restart reset lights/key; completion → Gardens → Back restores completion. Reload retained unlocks (all six garden buttons enabled after campaign). Touch move/jump/swap exercised in 390×844 responsive Chrome view, with desktop viewport restored. Mobile clipping was found and fixed, then re-inspected. Headings/buttons are DOM-based with visible keyboard focus.
+
+The final two added regression cases explicitly check a missing key/missing light at the exit and coyote jumping just after leaving a ledge.
 
 Screenshots: [local co-op](evidence/co-op.jpg), [planter](evidence/planter.jpg), [finale](evidence/finale.jpg), [phone menu](evidence/mobile-menu.jpg), [phone play](evidence/mobile-play.jpg).
 
