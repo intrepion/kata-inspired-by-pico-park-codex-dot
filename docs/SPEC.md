@@ -1,0 +1,8 @@
+# Together, Little Lights
+Original six-stage garden puzzle-platformer. Default local keyboard co-op: Sol uses A/D/W/E; Luna uses arrows/Up/Enter. Solo: A/D/W/E or arrows/Up/Enter control selected creature, Tab swaps; the parked creature stays. No online multiplayer.
+
+Acceptance: fixed 120Hz simulation, reliable solid collision, buffered/coyote jump, role-specific persistent beacons, shared retained key, portal requiring both creatures and all beacons, complete fresh restart, immediate fall recovery, six distinct puzzles, accessible DOM start/pause/select/completion, validated local progress, mute/reduced motion, touch solo controls, no inputs through menus. No commercial art/audio/layout copying. Type checks, tests, production build, audit, normal-control campaign/browser verification, private repo push and CI.
+
+Public test seams authorized by the delegated request: createWorld/step for physics and puzzle state; decodeProgress for untrusted saves. TDD proceeds one behavior slice at a time. Rendering stays separate from simulation. Player stacking deliberately omitted: creatures pass through each other, removing crush and carry exploits.
+
+No-interview adaptation: the user explicitly delegated recommended decisions and asked for no design questions. Local grilling's confirmation/interview and TDD seam-confirmation steps are fulfilled by this authorization. Decision tree: local game → simultaneous keyboard + solo parked character → persistent role beacons → shared key → both at portal; original garden theme → six short increasingly layered routes; browser TypeScript → independent fixed simulation → Canvas scene + DOM controls.

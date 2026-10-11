@@ -1,0 +1,2 @@
+# Persistent cooperation
+Beacons remain lit and the shared key cannot be dropped. Momentary pressure plates would demand simultaneous inputs in solo mode; persistent role-specific beacons preserve complementary cooperation while guaranteeing that switching characters remains a legitimate solution. Creatures pass through each other: stacking was rejected because it would bypass authored routes and introduce crush/carry ambiguity.
