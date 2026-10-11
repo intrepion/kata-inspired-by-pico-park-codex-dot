@@ -11,3 +11,6 @@ _Avoid_: Pressure plate
 _Avoid_: Inventory item
 **Portal**: The exit that welcomes both creatures after the garden is restored.
 **Stage**: One complete garden puzzle.
+
+**Planter**: A wheeled garden box that friends can push along a rail and climb to reach a light.
+_Avoid_: Crate

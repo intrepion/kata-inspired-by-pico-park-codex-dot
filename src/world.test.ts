@@ -145,3 +145,39 @@ test("the two creatures may cross without pushing or crushing", () => {
   assert.equal(w.players[0].y, 438);
   assert.equal(w.players[1].y, 438);
 });
+test("the exit remains closed to completion when a key or required light is missing", () => {
+  const l = fixture({
+    spawns: [
+      [860, 438],
+      [890, 438],
+    ],
+    key: { x: 100, y: 446 },
+    beacons: [{ x: 873, y: 470, role: 0 }],
+  });
+  const w = createWorld(0, l);
+  step(w, [{ act: true }, {}]);
+  assert.equal(w.won, false);
+  const missingLight = createWorld(0, { ...l, key: { x: 873, y: 446 } });
+  step(missingLight, [{}, {}]);
+  assert.equal(missingLight.key, true);
+  assert.equal(missingLight.won, false);
+  step(missingLight, [{ act: true }, {}]);
+  assert.equal(missingLight.won, true);
+});
+test("coyote time allows a jump just after walking off a ledge", () => {
+  const w = createWorld(
+    0,
+    fixture({
+      platforms: [{ x: 0, y: 470, w: 110, h: 20 }],
+      spawns: [
+        [90, 438],
+        [10, 438],
+      ],
+    }),
+  );
+  step(w, [{}, {}]);
+  for (let i = 0; i < 12; i++) step(w, [{ right: true }, {}]);
+  assert.equal(w.players[0].grounded, false);
+  step(w, [{ jump: true }, {}]);
+  assert.ok(w.players[0].vy < 0);
+});
