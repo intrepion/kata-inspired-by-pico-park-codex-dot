@@ -59,6 +59,34 @@ export function overlap(a: Rect, b: Rect) {
     a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
   );
 }
+function limitTravel(
+  body: Rect,
+  amount: number,
+  solids: Rect[],
+  axis: "x" | "y",
+) {
+  const cross = axis === "x" ? "y" : "x";
+  const size = axis === "x" ? "w" : "h";
+  const crossSize = axis === "x" ? "h" : "w";
+  for (const solid of solids) {
+    if (
+      body[cross] >= solid[cross] + solid[crossSize] ||
+      body[cross] + body[crossSize] <= solid[cross]
+    )
+      continue;
+    if (amount > 0 && body[axis] + body[size] <= solid[axis] + 0.001)
+      amount = Math.min(
+        amount,
+        Math.max(0, solid[axis] - body[axis] - body[size]),
+      );
+    if (amount < 0 && body[axis] >= solid[axis] + solid[size] - 0.001)
+      amount = Math.max(
+        amount,
+        Math.min(0, solid[axis] + solid[size] - body[axis]),
+      );
+  }
+  return amount;
+}
 export function step(w: World, inputs: Input[]) {
   if (w.won) return;
   w.ticks++;
@@ -67,6 +95,18 @@ export function step(w: World, inputs: Input[]) {
     ...w.planters,
     ...w.level.gates.filter((g) => !g.links.every((i) => w.lit[i])),
   ];
+  const before = w.players.map((p) => ({ x: p.x, y: p.y }));
+  const supports = w.players.map((p, id) =>
+    p.grounded
+      ? w.players.findIndex(
+          (other, otherId) =>
+            otherId !== id &&
+            p.x < other.x + other.w &&
+            p.x + p.w > other.x &&
+            Math.abs(p.y + p.h - other.y) < 0.001,
+        )
+      : -1,
+  );
   w.players.forEach((p, id) => {
     const input = inputs[id] ?? {};
     p.buffer = input.jump && !p.lastJump ? 0.12 : Math.max(0, p.buffer - DT);
@@ -78,8 +118,29 @@ export function step(w: World, inputs: Input[]) {
       p.buffer = 0;
       p.coyote = 0;
       p.grounded = false;
+      supports[id] = -1;
     }
-    p.x += p.vx * DT;
+  });
+  // Bases lead carried stacks; independently rising friends move top first so
+  // simultaneous jumps see the teammate's actual position, not stale feet.
+  const order = w.players
+    .map((_, id) => id)
+    .sort((a, b) => {
+      if (supports[a] === b) return 1;
+      if (supports[b] === a) return -1;
+      return w.players[a].vy < 0 && w.players[b].vy < 0
+        ? before[a].y - before[b].y
+        : before[b].y - before[a].y;
+    });
+  for (const id of order) {
+    const p = w.players[id];
+    const input = inputs[id] ?? {};
+    const support = supports[id] < 0 ? undefined : w.players[supports[id]];
+    const oldX = p.x;
+    let dx = p.vx * DT + (support ? support.x - before[supports[id]].x : 0);
+    const riders = w.players.filter((_, otherId) => supports[otherId] === id);
+    for (const rider of riders) dx = limitTravel(rider, dx, solids, "x");
+    p.x += dx;
     for (const planter of w.planters) {
       if (p.vx !== 0 && overlap(p, planter)) {
         const nextX = Math.max(
@@ -95,28 +156,71 @@ export function step(w: World, inputs: Input[]) {
           planter.x = nextX;
       }
     }
-    for (const s of solids)
-      if (overlap(p, s)) p.x = p.vx > 0 ? s.x - p.w : s.x + s.w;
+    p.x =
+      oldX +
+      limitTravel(
+        { ...p, x: oldX },
+        dx,
+        [...solids, ...w.players.filter((_, otherId) => otherId !== id)],
+        "x",
+      );
     p.x = Math.max(8, Math.min(926, p.x));
-    p.vy = Math.min(650, p.vy + 1200 * DT);
-    p.y += p.vy * DT;
-    p.grounded = false;
-    for (const s of solids)
-      if (overlap(p, s)) {
-        if (p.vy >= 0) {
-          p.y = s.y - p.h;
-          p.grounded = true;
-        } else p.y = s.y + s.h;
-        p.vy = 0;
-      }
+    const riding =
+      support && p.x < support.x + support.w && p.x + p.w > support.x;
+    p.vy = riding ? 0 : Math.min(650, p.vy + 1200 * DT);
+    const wantedY = riding ? support.y - before[supports[id]].y : p.vy * DT;
+    let dy = limitTravel(
+      p,
+      wantedY,
+      [
+        ...solids,
+        ...w.players.filter(
+          (_, otherId) => otherId !== id && supports[otherId] !== id,
+        ),
+      ],
+      "y",
+    );
+    // A ceiling stops a rising stack; a ledge may catch a descending rider
+    // while letting the base fall away below them.
+    if (dy < 0)
+      for (const rider of riders)
+        dy = limitTravel(
+          { ...rider, x: rider.x + p.x - oldX },
+          dy,
+          solids,
+          "y",
+        );
+    p.y += dy;
+    p.grounded = !!riding || (wantedY > 0 && dy < wantedY);
+    if (dy !== wantedY) p.vy = 0;
     if (p.y > 550) {
       const [x, y] = w.level.spawns[id];
       p.x = x;
       p.y = y;
+      // A friend may be parked at the spawn. Use the nearest free side position.
+      for (let offset = 0; offset <= 960; offset += p.w) {
+        const freeX = [x - offset, x + offset].find(
+          (candidate) =>
+            candidate >= 8 &&
+            candidate <= 926 &&
+            ![
+              ...solids,
+              ...w.players.filter((_, otherId) => otherId !== id),
+            ].some((solid) => overlap({ ...p, x: candidate }, solid)),
+        );
+        if (freeX !== undefined) {
+          p.x = freeX;
+          break;
+        }
+      }
       p.vy = 0;
       p.vx = 0;
       p.buffer = 0;
       p.coyote = 0;
+      p.grounded = false;
+      supports.forEach((base, rider) => {
+        if (base === id) supports[rider] = -1;
+      });
       w.falls++;
     }
     if (input.act && !p.lastAct)
@@ -133,7 +237,7 @@ export function step(w: World, inputs: Input[]) {
       overlap(p, { x: w.level.key.x - 12, y: w.level.key.y - 15, w: 24, h: 30 })
     )
       w.key = true;
-  });
+  }
   w.won =
     w.key &&
     w.lit.every(Boolean) &&

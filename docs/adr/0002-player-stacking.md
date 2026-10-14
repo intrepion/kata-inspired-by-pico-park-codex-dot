@@ -1,0 +1,5 @@
+# Solid friends and safe stacks
+
+The 2026-10-14 fidelity audit found that walking through teammates omitted PICO PARK's recognizable stacking, so this approved fix supersedes ADR 0001's pass-through choice. Friends now block at their sides and support riders; bases carry riders, but the whole stack stops at a rider's wall/ceiling contact rather than shoving a friend into terrain. This preserves independent jumping and the six existing solo/co-op routes without introducing free-body pushing, new puzzle gimmicks or a save migration; existing solo routes must hop over parked friends.
+
+The [official PICO PARK page](https://picoparkgame.com/en/pp1/) establishes the shared-screen cooperation/key/door loop; the audit's [firsthand stacking baseline](https://www.wired.com/2015/07/pico-park-bitsummit/) describes climbing on one another. Exact commercial movement constants are not claimed: the approved scope adds the physical relationship while retaining this game's 120Hz, 220px/s movement, 430px/s jump and original garden art/story.

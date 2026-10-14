@@ -3,11 +3,11 @@ import assert from "node:assert/strict";
 import { createWorld, step } from "./world.js";
 test("creatures land on solid ground and simultaneous movement is independent", () => {
   const w = createWorld(0);
-  for (let i = 0; i < 120; i++) step(w, [{ right: true }, { left: true }]);
+  for (let i = 0; i < 120; i++) step(w, [{ left: true }, { right: true }]);
   assert.equal(w.players[0].y, 438);
   assert.equal(w.players[1].y, 438);
-  assert.ok(w.players[0].x > 280);
-  assert.equal(w.players[1].x, 8);
+  assert.equal(w.players[0].x, 8);
+  assert.ok(w.players[1].x > 330);
 });
 test("a beacon responds only to its creature and remains lit after leaving", () => {
   const level = {
@@ -19,7 +19,7 @@ test("a beacon responds only to its creature and remains lit after leaving", () 
     key: { x: 800, y: 400 },
     portal: { x: 850, y: 400, w: 80, h: 70 },
     spawns: [
-      [70, 438],
+      [100, 438],
       [70, 438],
     ] as [number, number][],
   };
@@ -86,6 +86,10 @@ test("a closed gate stops movement until its linked light is lit", () => {
     fixture({
       beacons: [{ x: 83, y: 470, role: 0 }],
       gates: [{ x: 200, y: 300, w: 20, h: 170, links: [0] }],
+      spawns: [
+        [70, 438],
+        [750, 438],
+      ],
     }),
   );
   for (let i = 0; i < 120; i++) step(w, [{ right: true }, {}]);
@@ -130,7 +134,7 @@ test("holding jump cannot create repeated automatic jumps", () => {
   for (let i = 0; i < 180; i++) step(w, [{ jump: true }, {}]);
   assert.equal(w.players[0].y, 438);
 });
-test("the two creatures may cross without pushing or crushing", () => {
+test("friends approaching each other stop at body contact without crossing or crushing", () => {
   const w = createWorld(
     0,
     fixture({
@@ -141,7 +145,9 @@ test("the two creatures may cross without pushing or crushing", () => {
     }),
   );
   for (let i = 0; i < 60; i++) step(w, [{ right: true }, { left: true }]);
-  assert.ok(w.players[0].x > w.players[1].x);
+  assert.ok(w.players[0].x + 26 <= w.players[1].x);
+  assert.ok(w.players[0].x > 70);
+  assert.ok(w.players[1].x < 170);
   assert.equal(w.players[0].y, 438);
   assert.equal(w.players[1].y, 438);
 });

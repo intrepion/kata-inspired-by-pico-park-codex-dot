@@ -73,7 +73,7 @@ function load(i: number) {
 }
 function startMenu() {
   overlay(
-    `<p class="eyebrow">Made for a little teamwork</p><h2>Good things grow<br>when we go together.</h2><p>Guide Sol and Luna through six floating gardens. Light your own beacons, find the shared key, and meet at the arch.</p><div class="actions"><button id="coop">Play local co-op</button><button id="solo" class="secondary">Play solo · swap friends</button></div><p>Solo: Tab switches friends. Both movement schemes control your selected friend. Lights remain lit while you switch.</p>`,
+    `<p class="eyebrow">Made for a little teamwork</p><h2>Good things grow<br>when we go together.</h2><p>Guide Sol and Luna through six floating gardens. Light your own beacons, find the shared key, and meet at the arch. Jump onto a friend to stack; the base carries the rider, who can jump off.</p><div class="actions"><button id="coop">Play local co-op</button><button id="solo" class="secondary">Play solo · swap friends</button></div><p>Solo: Tab switches friends. Both movement schemes control your selected friend. Lights remain lit while you switch.</p>`,
   );
   el("coop").onclick = () => {
     solo = false;
@@ -83,7 +83,7 @@ function startMenu() {
   el("solo").onclick = () => {
     solo = true;
     el("mode-label").textContent =
-      "Solo · Tab swaps friends · parked friend stays";
+      "Solo · Tab swaps friends · friends can carry each other";
     load(0);
   };
 }

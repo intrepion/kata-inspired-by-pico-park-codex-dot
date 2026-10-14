@@ -18,7 +18,7 @@ const portal = { x: 852, y: 394, w: 80, h: 76 };
 export const levels: Level[] = [
   {
     name: "A spark between us",
-    hint: "Find the key, then meet at the arch. Jump with W / ↑.",
+    hint: "Jump with W / ↑. Land on a friend to stack and ride; find the key and meet at the arch.",
     platforms: [ground, shelf(350, 410, 130)],
     beacons: [],
     gates: [],

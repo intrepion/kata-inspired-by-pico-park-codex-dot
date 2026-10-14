@@ -9,7 +9,7 @@ test("30Hz and 144Hz frames produce the same one-second movement", () => {
     let ticks = 0;
     for (let i = 0; i < hz; i++)
       for (let n = c.advance(1 / hz); n > 0; n--) {
-        step(w, [{ right: true }, {}]);
+        step(w, [{ right: true }, { right: true }]);
         ticks++;
       }
     assert.equal(ticks, 120);

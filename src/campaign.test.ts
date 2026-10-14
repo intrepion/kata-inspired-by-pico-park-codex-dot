@@ -7,10 +7,27 @@ function tick(w: World, id: number, input: Input = {}, count = 1) {
 function move(w: World, id: number, x: number) {
   for (let n = 0; !w.won && Math.abs(w.players[id].x - x) > 2; n++) {
     assert.ok(n < 800, `route blocked at ${w.players[id].x}, aiming ${x}`);
-    tick(w, id, { right: w.players[id].x < x, left: w.players[id].x > x });
+    const p = w.players[id],
+      other = w.players[1 - id];
+    const right = p.x < x;
+    // A solo route must now go over a parked friend, rather than through them.
+    const friendAhead = right
+      ? other.x >= p.x && other.x - p.x < 55
+      : other.x <= p.x && p.x - other.x < 55;
+    const bodiesLevel = p.y < other.y + other.h && p.y + p.h > other.y;
+    tick(w, id, {
+      right,
+      left: !right,
+      jump: friendAhead && bodiesLevel && p.grounded && !p.lastJump,
+    });
   }
 }
 function jump(w: World, id: number, x: number) {
+  // A previous approach may have hopped over a parked friend; land before the next jump.
+  for (let n = 0; !w.players[id].grounded; n++) {
+    assert.ok(n < 180, "friend did not settle before the next jump");
+    tick(w, id);
+  }
   tick(w, id, {
     jump: true,
     right: w.players[id].x < x,
@@ -24,7 +41,7 @@ function light(w: World, id: number) {
   tick(w, id);
 }
 function exit(w: World, id: number) {
-  move(w, id, 860);
+  move(w, id, w.players[1 - id].x >= 850 ? 860 : 900);
   tick(w, id, {}, 100);
 }
 const first = (w: World, id: number) => {

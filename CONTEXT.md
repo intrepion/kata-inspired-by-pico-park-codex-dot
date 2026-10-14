@@ -14,3 +14,7 @@ _Avoid_: Inventory item
 
 **Planter**: A wheeled garden box that friends can push along a rail and climb to reach a light.
 _Avoid_: Crate
+
+**Stack**: Friends standing one on another to reach higher or travel together.
+**Base**: The friend supporting a rider in a stack.
+**Rider**: A friend standing on a base, able to walk or jump away.
