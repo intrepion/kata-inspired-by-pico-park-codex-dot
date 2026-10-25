@@ -58,3 +58,7 @@ Stop: `launchctl remove com.intrepion.little-lights`. Inspect: `launchctl list c
 See [QA evidence](docs/QA.md), [specification](docs/SPEC.md), [glossary](CONTEXT.md), [decision](docs/adr/0001-cooperative-solo.md), and [independent reviews](docs/REVIEWS.md). CI runs type checks, the full behavior suite, production build and dependency audit.
 
 The original six-stage version was completed through normal visible Chrome keyboard controls on this Mac, including the planter puzzle. The stacking change has 35 passing simulation/input/clock tests, including updated legitimate solo routes through all six unchanged stages, wall/ceiling safety, both friend roles, occupied-spawn recovery and equal stack movement at 30Hz/144Hz. Fresh stacking browser verification is tracked separately in [QA](docs/QA.md); the historical playthrough is not evidence of this new mechanic. This is not a physical two-person keyboard-rollover test or a physical phone multitouch test. Browser audio controls were exercised historically; actual speaker listening was not verified.
+
+## Play online
+
+[Play the hosted game](https://intrepion.github.io/kata-inspired-by-pico-park-codex-dot/)
