@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "workflowCommit": "a2e8f47b0fe2fa4a98a3c841db62cdac2bca7ec6",
+  "sourceCommit": "43e9c34591a69e75c81ee40647b8723a69f8ef7c",
+  "runId": "41412771773",
+  "url": "http://127.0.0.1:4239/",
+  "inputs": {
+    "index.html": "fa3e502a8c92bf0c2791c112f5816267cee5e424edae59f6a99c2d4fff3812b4",
+    "assets/index-BZKS2Hf5.js": "0bfbc8355c46765491338053e90a1c47ade440530aa760ad61b73127faf715b8",
+    "assets/index-op65skeS.css": "89ab8d90e5f736a0ee7537489f2c20c777e82d88a8a0e7f40740972abcf11edc"
+  },
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "screenshots": [
+    "little-lights-01.png",
+    "little-lights-02.png"
+  ]
+}

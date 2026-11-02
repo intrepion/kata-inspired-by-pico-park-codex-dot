@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "kata-inspired-by-pico-park-codex-dot",
   "playUrl": "https://intrepion.github.io/kata-inspired-by-pico-park-codex-dot/",
   "screenshots": [
@@ -23,6 +23,46 @@
         "sourcePath": "docs/evidence/planter.jpg",
         "deployedBuild": null,
         "captureDate": null
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-01.jpg",
+      "sha256": "cef9679078ebb413bea43fae302275acef7fe3c43a14f724db4fdbc8e61358bd",
+      "alt": "Together, Little Lights gameplay, view 1",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-01.png",
+        "sourceSha256": "7500eeba002ca3e9bfdedbaa3a8a8f471cf6ec15ecb694b9824e1f6e67801a01",
+        "captureCommit": "43e9c34591a69e75c81ee40647b8723a69f8ef7c",
+        "workflowRunId": "41412771773",
+        "inputHashes": {
+          "index.html": "fa3e502a8c92bf0c2791c112f5816267cee5e424edae59f6a99c2d4fff3812b4",
+          "assets/index-BZKS2Hf5.js": "0bfbc8355c46765491338053e90a1c47ade440530aa760ad61b73127faf715b8",
+          "assets/index-op65skeS.css": "89ab8d90e5f736a0ee7537489f2c20c777e82d88a8a0e7f40740972abcf11edc"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "5cd7d391c41424b6775d58df3b456711f93298f2bbdb80b7cdb8af92c02aaee3"
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-02.jpg",
+      "sha256": "56a70a3780dc7c16eebdb086393f47acb2b7edf4c1c2755db353127e0cf79a26",
+      "alt": "Together, Little Lights gameplay, view 2",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-02.png",
+        "sourceSha256": "f82fabe012aa83311fd044acaa8fa255b0b83ac6b38386e041aea788fa646d61",
+        "captureCommit": "43e9c34591a69e75c81ee40647b8723a69f8ef7c",
+        "workflowRunId": "41412771773",
+        "inputHashes": {
+          "index.html": "fa3e502a8c92bf0c2791c112f5816267cee5e424edae59f6a99c2d4fff3812b4",
+          "assets/index-BZKS2Hf5.js": "0bfbc8355c46765491338053e90a1c47ade440530aa760ad61b73127faf715b8",
+          "assets/index-op65skeS.css": "89ab8d90e5f736a0ee7537489f2c20c777e82d88a8a0e7f40740972abcf11edc"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "5cd7d391c41424b6775d58df3b456711f93298f2bbdb80b7cdb8af92c02aaee3"
       }
     }
   ]
