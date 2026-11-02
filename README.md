@@ -62,3 +62,7 @@ The original six-stage version was completed through normal visible Chrome keybo
 ## Play online
 
 [Play the hosted game](https://intrepion.github.io/kata-inspired-by-pico-park-codex-dot/)
+
+## Arcade metadata
+
+See [docs/arcade-metadata.md](docs/arcade-metadata.md) for the game-owned manifest and screenshot provenance.

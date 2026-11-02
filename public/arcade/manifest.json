@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "gameId": "kata-inspired-by-pico-park-codex-dot",
+  "playUrl": "https://intrepion.github.io/kata-inspired-by-pico-park-codex-dot/",
+  "screenshots": [
+    {
+      "path": "arcade/screenshots/view-01.jpg",
+      "sha256": "e276471c3e13f51d91d42f0f1cdafa229d827d355b175cd91c79ee2dc35da0f4",
+      "alt": "Gameplay capture 1",
+      "provenance": {
+        "kind": "existing_repository_capture",
+        "sourcePath": "docs/evidence/co-op.jpg",
+        "deployedBuild": null,
+        "captureDate": null
+      }
+    },
+    {
+      "path": "arcade/screenshots/view-02.jpg",
+      "sha256": "08e5c05b7594ec2dc16aa7c86df5f0743f1d8d77ca8968f0118e8ea70304af62",
+      "alt": "Gameplay capture 2",
+      "provenance": {
+        "kind": "existing_repository_capture",
+        "sourcePath": "docs/evidence/planter.jpg",
+        "deployedBuild": null,
+        "captureDate": null
+      }
+    }
+  ]
+}
